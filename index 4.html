@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161d;
+    --card: #1a1e28;
+    --border: #252a38;
+    --accent: #f0c060;
+    --accent2: #7eb8f7;
+    --accent3: #a78bfa;
+    --accent4: #6ee7b7;
+    --accent5: #fb7185;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 200px;
+    background: radial-gradient(ellipse, rgba(240,192,96,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  header .label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  header h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  header p {
+    color: var(--muted);
+    font-size: 0.85rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 0.45rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0d0f14;
+    font-weight: 600;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
+
+  .chapter { display: none; }
+  .chapter.active { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* CHAPTER HEADER */
+  .ch-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .ch-header::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 120px; height: 100%;
+    background: linear-gradient(to left, var(--ch-color, rgba(240,192,96,0.06)), transparent);
+    pointer-events: none;
+  }
+  .ch-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--ch-color, var(--accent));
+    opacity: 0.9;
+    flex-shrink: 0;
+  }
+  .ch-info h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+  .ch-info p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* SECTIONS */
+  .section-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .section-card:hover { border-color: var(--ch-color, var(--accent)); }
+
+  .section-card summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.1rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .section-card summary::-webkit-details-marker { display: none; }
+
+  .sec-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ch-color, var(--accent));
+    background: color-mix(in srgb, var(--ch-color, var(--accent)) 12%, transparent);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .sec-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .toggle-icon {
+    font-size: 0.7rem;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  details[open] .toggle-icon { transform: rotate(90deg); }
+
+  .section-body {
+    padding: 0 1.1rem 1rem 1.1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* CONCEPTS */
+  .concepts-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 0.9rem 0 0.5rem;
+  }
+
+  .concept-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .concept-list li {
+    font-size: 0.82rem;
+    color: #c5cad8;
+    padding: 0.35rem 0.6rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.4;
+  }
+  .concept-list li::before {
+    content: '→';
+    color: var(--ch-color, var(--accent));
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    margin-top: 0.05rem;
+  }
+
+  /* KEY FORMULAS */
+  .formula-box {
+    margin-top: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid var(--ch-color, var(--accent));
+    border-radius: 0 6px 6px 0;
+  }
+  .formula-box .f-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ch-color, var(--accent));
+    margin-bottom: 0.4rem;
+  }
+  .formula-box p {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: #d0d5e8;
+    line-height: 1.6;
+  }
+
+  /* TIPS */
+  .tip-box {
+    margin-top: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    background: color-mix(in srgb, var(--ch-color, var(--accent)) 8%, transparent);
+    border-radius: 6px;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  .tip-box .tip-icon { font-size: 0.85rem; flex-shrink: 0; }
+  .tip-box p { font-size: 0.78rem; color: #b0b8cc; line-height: 1.45; }
+
+  /* SUMMARY BOX */
+  .summary-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .summary-box h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 0.95rem;
+    color: var(--ch-color, var(--accent));
+    margin-bottom: 0.6rem;
+  }
+  .summary-box p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">Precalculus · Study Guide</div>
+  <h1>Chapters <em>2, 3, 4, 5, 14</em></h1>
+  <p>Functions through limits — tap any section to expand key concepts & formulas.</p>
+</header>
+
+<nav>
+  <button class="tab-btn active" onclick="showChapter('ch2')">Ch 2 · Functions</button>
+  <button class="tab-btn" onclick="showChapter('ch3')">Ch 3 · Linear & Quadratic</button>
+  <button class="tab-btn" onclick="showChapter('ch4')">Ch 4 · Poly & Rational</button>
+  <button class="tab-btn" onclick="showChapter('ch5')">Ch 5 · Exp & Log</button>
+  <button class="tab-btn" onclick="showChapter('ch14')">Ch 14 · Limits</button>
+</nav>
+
+<main>
+
+<!-- ===================== CH 2 ===================== -->
+<div id="ch2" class="chapter active" style="--ch-color: #f0c060;">
+  <div class="ch-header">
+    <div class="ch-num">2</div>
+    <div class="ch-info">
+      <h2>Functions</h2>
+      <p>Defining, graphing, and transforming functions. The foundation of all chapters ahead.</p>
+    </div>
+  </div>
+
+  <div class="section-grid">
+    <details class="section-card">
+      <summary><span class="sec-num">2.1</span><span class="sec-title">Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>A <b>function</b> is a rule assigning exactly one output to each input</li>
+          <li>Notation: f(x), g(x) — f(x) is the output when input is x</li>
+          <li><b>Domain</b>: all valid inputs; <b>Range</b>: all possible outputs</li>
+          <li>Vertical Line Test: a graph is a function if every vertical line hits it at most once</li>
+          <li>Difference Quotient: [f(x+h) − f(x)] / h — slope of a secant line</li>
+        </ul>
+        <div class="tip-box"><span class="tip-icon">💡</span><p>If you see a square root or fraction, find the domain by setting the radicand ≥ 0 or denominator ≠ 0.</p></div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">2.2</span><span class="sec-title">The Graph of a Function</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Reading domain/range from a graph (x-extent and y-extent)</li>
+          <li>x-intercepts (zeros): where f(x) = 0; y-intercept: where x = 0</li>
+          <li>Graph can show where a function is positive or negative</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">2.3</span><span class="sec-title">Properties of Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li><b>Increasing</b>: f(a) &lt; f(b) when a &lt; b; <b>Decreasing</b>: f(a) &gt; f(b) when a &lt; b</li>
+          <li><b>Even function</b>: f(−x) = f(x) → symmetric about y-axis</li>
+          <li><b>Odd function</b>: f(−x) = −f(x) → symmetric about origin</li>
+          <li>Local max/min: turning points where function changes direction</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">2.4</span><span class="sec-title">Library of Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Parent Functions to Memorize</p>
+        <ul class="concept-list">
+          <li>Constant: f(x) = c (horizontal line)</li>
+          <li>Linear: f(x) = x; Quadratic: f(x) = x²; Cubic: f(x) = x³</li>
+          <li>Square root: f(x) = √x; Cube root: f(x) = ∛x</li>
+          <li>Absolute value: f(x) = |x|; Reciprocal: f(x) = 1/x</li>
+        </ul>
+        <div class="tip-box"><span class="tip-icon">📌</span><p>Know the shape, domain, and range of every parent function cold — transformations in 2.5 build on all of them.</p></div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">2.5</span><span class="sec-title">Graphing Techniques & Transformations</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Transformation Rules</p>
+        <ul class="concept-list">
+          <li><b>Vertical shift</b>: f(x) + k → up k; f(x) − k → down k</li>
+          <li><b>Horizontal shift</b>: f(x − h) → right h; f(x + h) → left h</li>
+          <li><b>Vertical stretch</b>: a·f(x), |a| &gt; 1 stretches; 0 &lt; |a| &lt; 1 compresses</li>
+          <li><b>Reflect over x-axis</b>: −f(x); <b>over y-axis</b>: f(−x)</li>
+          <li><b>Piecewise functions</b>: different formulas for different parts of domain</li>
+        </ul>
+        <div class="formula-box">
+          <div class="f-label">General Form</div>
+          <p>g(x) = a · f(x − h) + k<br>h = horizontal shift, k = vertical shift, a = stretch/reflect</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">2.6</span><span class="sec-title">Mathematical Models & Building Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Setting up functions to model real-world relationships</li>
+          <li>Express one variable in terms of another using constraints</li>
+          <li>Find the domain that makes physical/practical sense</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ===================== CH 3 ===================== -->
+<div id="ch3" class="chapter" style="--ch-color: #7eb8f7;">
+  <div class="ch-header">
+    <div class="ch-num">3</div>
+    <div class="ch-info">
+      <h2>Linear & Quadratic Functions</h2>
+      <p>Modeling with lines and parabolas; analyzing their graphs and solving inequalities.</p>
+    </div>
+  </div>
+
+  <div class="section-grid">
+    <details class="section-card">
+      <summary><span class="sec-num">3.1</span><span class="sec-title">Properties of Linear Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Linear: f(x) = mx + b; slope m = rise/run = Δy/Δx</li>
+          <li>Positive slope → increasing; Negative → decreasing; m = 0 → constant</li>
+          <li>Average rate of change = slope between two points</li>
+        </ul>
+        <div class="formula-box">
+          <div class="f-label">Slope Formulas</div>
+          <p>m = (y₂ − y₁)/(x₂ − x₁)<br>Point-slope: y − y₁ = m(x − x₁)</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">3.2</span><span class="sec-title">Building Linear Models from Data</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Scatter plots: plot data, look for linear pattern</li>
+          <li>Line of best fit (linear regression): minimizes error</li>
+          <li>Interpret slope and y-intercept in context</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">3.3</span><span class="sec-title">Quadratic Functions & Their Properties</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Standard: f(x) = ax² + bx + c; Vertex form: f(x) = a(x−h)² + k</li>
+          <li>Vertex: (h, k) = (−b/2a, f(−b/2a))</li>
+          <li>a &gt; 0 → parabola opens up (min); a &lt; 0 → opens down (max)</li>
+          <li>Axis of symmetry: x = −b/(2a)</li>
+          <li>x-intercepts via quadratic formula, factoring, or completing the square</li>
+        </ul>
+        <div class="formula-box">
+          <div class="f-label">Quadratic Formula</div>
+          <p>x = [−b ± √(b² − 4ac)] / 2a<br>Discriminant: b²−4ac &gt; 0 → 2 real roots; = 0 → 1; &lt; 0 → no real</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">3.4</span><span class="sec-title">Building Quadratic Models from Data</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Quadratic regression: fit a parabola to data</li>
+          <li>Use vertex to find max/min value in context (e.g., max profit, max height)</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">3.5</span><span class="sec-title">Inequalities Involving Quadratic Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Solve f(x) &gt; 0 or f(x) &lt; 0 by finding zeros first, then testing intervals</li>
+          <li>Sign chart: mark zeros, test a value in each interval</li>
+          <li>Write solution in interval notation</li>
+        </ul>
+        <div class="tip-box"><span class="tip-icon">💡</span><p>Always check whether endpoints are included (≥, ≤) or excluded (&gt;, &lt;) when writing interval notation.</p></div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ===================== CH 4 ===================== -->
+<div id="ch4" class="chapter" style="--ch-color: #a78bfa;">
+  <div class="ch-header">
+    <div class="ch-num">4</div>
+    <div class="ch-info">
+      <h2>Polynomial & Rational Functions</h2>
+      <p>Higher-degree polynomials, rational graphs, zeros, and the Fundamental Theorem of Algebra.</p>
+    </div>
+  </div>
+
+  <div class="section-grid">
+    <details class="section-card">
+      <summary><span class="sec-num">4.1–4.2</span><span class="sec-title">Polynomial Functions & Graphing</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Degree n → at most n zeros, n−1 turning points</li>
+          <li>End behavior: determined by leading term axⁿ</li>
+          <li>Even degree, positive a → both ends up; odd degree, positive a → left down, right up</li>
+          <li>Multiplicity: if (x−c)^m is a factor, zero at c has multiplicity m</li>
+          <li>Even multiplicity → graph touches but doesn't cross x-axis; odd → crosses</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">4.3–4.4</span><span class="sec-title">Rational Functions & Their Graphs</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>R(x) = p(x)/q(x); domain excludes where q(x) = 0</li>
+          <li>Vertical asymptote: x = c where q(c) = 0 and p(c) ≠ 0</li>
+          <li>Hole: x = c where both p(c) = 0 and q(c) = 0 (cancel the factor)</li>
+          <li>Horizontal asymptote: compare degrees of numerator and denominator</li>
+          <li>Oblique asymptote: if degree(p) = degree(q) + 1 → do polynomial long division</li>
+        </ul>
+        <div class="formula-box">
+          <div class="f-label">Horizontal Asymptote Rules</div>
+          <p>deg(p) &lt; deg(q) → y = 0<br>deg(p) = deg(q) → y = leading coeff ratio<br>deg(p) &gt; deg(q) → no horizontal asymptote</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">4.5</span><span class="sec-title">Polynomial & Rational Inequalities</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Move everything to one side, factor completely</li>
+          <li>Mark zeros AND vertical asymptotes on a number line</li>
+          <li>Test sign in each interval; asymptotes are never included in solution</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">4.6</span><span class="sec-title">Real Zeros of a Polynomial</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li><b>Rational Zeros Theorem</b>: possible rational zeros = ±(factors of constant)/(factors of leading coeff)</li>
+          <li>Synthetic division: test candidates efficiently</li>
+          <li>Remainder Theorem: f(c) = remainder when f(x) ÷ (x−c)</li>
+          <li>Factor Theorem: (x−c) is a factor iff f(c) = 0</li>
+          <li>Descartes' Rule of Signs: count sign changes for + and − real zeros</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">4.7</span><span class="sec-title">Complex Zeros; Fundamental Theorem of Algebra</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li><b>FTA</b>: every degree-n polynomial has exactly n zeros (counting multiplicity, complex included)</li>
+          <li>Complex zeros of real polynomials come in conjugate pairs: a+bi and a−bi</li>
+          <li>Use known real zeros to factor down, then solve the remaining quadratic</li>
+        </ul>
+        <div class="tip-box"><span class="tip-icon">💡</span><p>If you find one complex zero a+bi, immediately write down a−bi as another zero.</p></div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ===================== CH 5 ===================== -->
+<div id="ch5" class="chapter" style="--ch-color: #6ee7b7;">
+  <div class="ch-header">
+    <div class="ch-num">5</div>
+    <div class="ch-info">
+      <h2>Exponential & Logarithmic Functions</h2>
+      <p>Transcendental functions, their inverses, properties, and real-world models.</p>
+    </div>
+  </div>
+
+  <div class="section-grid">
+    <details class="section-card">
+      <summary><span class="sec-num">5.1</span><span class="sec-title">Composite Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>(f ∘ g)(x) = f(g(x)) — apply g first, then f</li>
+          <li>Domain of f ∘ g: start with domain of g, then restrict where g(x) is in domain of f</li>
+          <li>Order matters: f ∘ g ≠ g ∘ f in general</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">5.2</span><span class="sec-title">One-to-One & Inverse Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>One-to-one: passes horizontal line test → has an inverse</li>
+          <li>Find inverse: swap x and y, solve for y</li>
+          <li>f(f⁻¹(x)) = x and f⁻¹(f(x)) = x</li>
+          <li>Graph of f⁻¹: reflect graph of f over y = x</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">5.3</span><span class="sec-title">Exponential Functions</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>f(x) = aˣ where a &gt; 0, a ≠ 1; domain: all reals; range: (0, ∞)</li>
+          <li>a &gt; 1 → increasing (growth); 0 &lt; a &lt; 1 → decreasing (decay)</li>
+          <li>Always passes through (0, 1); horizontal asymptote at y = 0</li>
+          <li>Natural exponential: f(x) = eˣ where e ≈ 2.718</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">5.4–5.5</span><span class="sec-title">Logarithmic Functions & Properties</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>log_a(x) = y ↔ aʸ = x (logs are exponents!)</li>
+          <li>Domain: (0, ∞); Range: all reals; passes through (1, 0)</li>
+          <li>Natural log: ln(x) = log_e(x)</li>
+        </ul>
+        <div class="formula-box">
+          <div class="f-label">Log Properties (memorize these)</div>
+          <p>log(MN) = log M + log N<br>log(M/N) = log M − log N<br>log(Mʳ) = r·log M<br>Change of base: log_a(x) = ln(x)/ln(a)</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">5.6</span><span class="sec-title">Exponential & Log Equations</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Exponential equation: isolate the base, then take log of both sides</li>
+          <li>Log equation: condense logs, convert to exponential form, solve</li>
+          <li>Always check for extraneous solutions (log domain is x &gt; 0)</li>
+        </ul>
+        <div class="tip-box"><span class="tip-icon">💡</span><p>Strategy: exponential → log both sides; log equation → exponentiate both sides.</p></div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">5.7–5.8</span><span class="sec-title">Financial Models & Growth/Decay</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <div class="formula-box">
+          <div class="f-label">Key Formulas</div>
+          <p>Compound interest: A = P(1 + r/n)^(nt)<br>Continuous: A = Pe^(rt)<br>Exponential growth/decay: A = A₀·e^(kt)<br>Half-life: A = A₀·(1/2)^(t/h)</p>
+        </div>
+        <ul class="concept-list" style="margin-top:0.6rem">
+          <li>k &gt; 0 → growth; k &lt; 0 → decay</li>
+          <li>Newton's Law of Cooling: T(t) = (T₀ − Tₘ)e^(kt) + Tₘ</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- ===================== CH 14 ===================== -->
+<div id="ch14" class="chapter" style="--ch-color: #fb7185;">
+  <div class="ch-header">
+    <div class="ch-num">14</div>
+    <div class="ch-info">
+      <h2>A Preview of Calculus: Limits</h2>
+      <p>Introduction to limits, continuity, derivatives, and integrals — the bridge to calculus.</p>
+    </div>
+  </div>
+
+  <div class="section-grid">
+    <details class="section-card">
+      <summary><span class="sec-num">14.1</span><span class="sec-title">Investigating Limits Using Tables & Graphs</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>lim[x→c] f(x) = L means f(x) gets close to L as x approaches c</li>
+          <li>The limit asks "what value is f approaching?" — not what f(c) equals</li>
+          <li>Limit may exist even if f(c) is undefined</li>
+          <li>Use table of values approaching c from both sides to estimate limit</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">14.2</span><span class="sec-title">Algebraic Techniques for Finding Limits</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Techniques</p>
+        <ul class="concept-list">
+          <li><b>Direct substitution</b>: if f(c) is defined, the answer is f(c)</li>
+          <li><b>Factor & cancel</b>: factor numerator/denominator, cancel common factor, then substitute</li>
+          <li><b>Rationalize</b>: multiply by conjugate when square roots are involved</li>
+          <li><b>Limits at infinity</b>: divide by highest power of x in denominator</li>
+        </ul>
+        <div class="formula-box">
+          <div class="f-label">Limit Laws</div>
+          <p>lim(f ± g) = lim f ± lim g<br>lim(f · g) = lim f · lim g<br>lim(f/g) = lim f / lim g  (if lim g ≠ 0)</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">14.3</span><span class="sec-title">One-Sided Limits & Continuity</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>lim[x→c⁻] f(x): left-hand limit (approach from left)</li>
+          <li>lim[x→c⁺] f(x): right-hand limit (approach from right)</li>
+          <li>Two-sided limit exists iff left limit = right limit</li>
+          <li><b>Continuity at c</b>: f(c) defined, limit exists, and lim = f(c)</li>
+          <li>Types of discontinuity: removable (hole), jump, infinite (asymptote)</li>
+        </ul>
+        <div class="tip-box"><span class="tip-icon">💡</span><p>Polynomials are always continuous. Rationals are continuous everywhere except where the denominator = 0.</p></div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">14.4</span><span class="sec-title">The Tangent Problem & The Derivative</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Secant line slope approaches tangent line slope as h → 0</li>
+          <li>The derivative f'(c) = the slope of the tangent at x = c</li>
+          <li>Derivative = instantaneous rate of change</li>
+        </ul>
+        <div class="formula-box">
+          <div class="f-label">Derivative Definition</div>
+          <p>f'(x) = lim[h→0] [f(x+h) − f(x)] / h</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="section-card">
+      <summary><span class="sec-num">14.5</span><span class="sec-title">The Area Problem & The Integral</span><span class="toggle-icon">▶</span></summary>
+      <div class="section-body">
+        <p class="concepts-label">Key Concepts</p>
+        <ul class="concept-list">
+          <li>Area under a curve approximated by rectangles (Riemann sums)</li>
+          <li>More rectangles → better approximation</li>
+          <li>The definite integral = exact area as number of rectangles → ∞</li>
+          <li>∫_a^b f(x)dx = limit of Riemann sum</li>
+        </ul>
+        <div class="tip-box"><span class="tip-icon">📌</span><p>This chapter is just an introduction — know the concepts and limit definitions. Computation comes in Calc 1.</p></div>
+      </div>
+    </details>
+  </div>
+</div>
+
+</main>
+
+<script>
+function showChapter(id) {
+  document.querySelectorAll('.chapter').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+</script>
+</body>
+</html>
